@@ -1,0 +1,1744 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Project 22 – Ghost Stealth Relay</title>
+  <style>
+    :root {
+      --bg-main: #020308;
+      --bg-panel: #050910;
+      --bg-panel-alt: #070b14;
+      --bg-elevated: #0b111f;
+      --accent-green: #6bffb5;
+      --accent-green-soft: #34c98b;
+      --accent-cyan: #3bd8ff;
+      --accent-orange: #ffb45a;
+      --accent-red: #ff4b5c;
+      --grid-line: #111826;
+      --text-main: #f5f7fb;
+      --text-soft: #a5b0c9;
+      --text-muted: #5d6781;
+      --border-subtle: #151b29;
+      --shadow-strong: 0 0 40px rgba(0, 0, 0, 0.85);
+      --shadow-soft: 0 0 24px rgba(0, 0, 0, 0.6);
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #151c2e 0, #020308 48%, #000 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .shell {
+      background: radial-gradient(circle at top left, #172033 0, #050910 55%);
+      border-radius: 18px;
+      padding: 22px 24px 20px 24px;
+      box-shadow: var(--shadow-strong);
+      width: 1120px;
+      max-width: 100%;
+      border: 1px solid #151b2b;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .shell::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background:
+        radial-gradient(circle at 0% 0%, rgba(80, 255, 200, 0.16) 0, transparent 52%),
+        radial-gradient(circle at 100% 0%, rgba(80, 200, 255, 0.16) 0, transparent 55%);
+      opacity: 0.75;
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    .shell-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .brand-block {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-line {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 21px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-main);
+    }
+
+    .project-id {
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(107, 255, 181, 0.7);
+      font-size: 10px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: var(--accent-green);
+      background: radial-gradient(circle at top, rgba(107, 255, 181, 0.12), transparent 70%);
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 11px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+    }
+
+    .env-indicators {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--text-muted);
+    }
+
+    .env-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.55);
+      background: linear-gradient(90deg, rgba(15, 118, 184, 0.55), rgba(22, 163, 74, 0.38));
+      color: #e5f9ff;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.55);
+    }
+
+    .env-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff, #6bffb5 60%, #16a34a 100%);
+      box-shadow: 0 0 10px rgba(107, 255, 181, 0.9);
+    }
+
+    .pin-gate {
+      margin-top: 8px;
+      padding: 10px 10px 8px 10px;
+      border-radius: 10px;
+      background: radial-gradient(circle at top left, rgba(15, 23, 42, 0.95) 0, #020308 80%);
+      border: 1px solid rgba(30, 64, 175, 0.65);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pin-gate::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(to right, rgba(148, 163, 184, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+      background-size: 28px 28px;
+      opacity: 0.6;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+
+    .pin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .field-label {
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+    }
+
+    .field-sub {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .pin-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .pin-inputs {
+      display: flex;
+      gap: 6px;
+    }
+
+    .pin-inputs input[type="password"] {
+      width: 38px;
+      padding: 6px 0;
+      text-align: center;
+      border-radius: 6px;
+      border: 1px solid rgba(51, 65, 85, 0.95);
+      background: radial-gradient(circle at top, #020617, #020308 65%);
+      color: #e5f5ff;
+      font-size: 18px;
+      font-family: "Consolas", "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+      outline: none;
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.8);
+    }
+
+    .pin-inputs input[type="password"]:focus {
+      border-color: rgba(56, 189, 248, 0.9);
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.8);
+    }
+
+    button {
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(34, 197, 94, 0.9);
+      background: radial-gradient(circle at top, rgba(21, 128, 61, 0.9), rgba(5, 46, 22, 0.96));
+      color: #e7fffb;
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.16s ease-out, box-shadow 0.16s ease-out, transform 0.08s ease-out;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    button span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff, #6bffb5 60%, #16a34a 100%);
+      box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
+    }
+
+    button:hover {
+      background: radial-gradient(circle at top, rgba(34, 197, 94, 0.9), rgba(4, 120, 87, 0.96));
+      box-shadow: 0 0 18px rgba(34, 197, 94, 0.75);
+      transform: translateY(-0.5px);
+    }
+
+    button:active {
+      transform: translateY(0.5px) scale(0.99);
+      box-shadow: 0 0 10px rgba(34, 197, 94, 0.55);
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: default;
+      box-shadow: none;
+      background: radial-gradient(circle at top, rgba(31, 41, 55, 0.9), rgba(17, 24, 39, 0.96));
+      border-color: rgba(55, 65, 81, 0.9);
+    }
+
+    .status {
+      margin-top: 6px;
+      min-height: 16px;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .status.ok {
+      color: var(--accent-green);
+    }
+
+    .status.err {
+      color: var(--accent-red);
+    }
+
+    .grid-two {
+      display: grid;
+      grid-template-columns: 1.6fr 1.4fr;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .panel {
+      border-radius: var(--radius-lg);
+      background: radial-gradient(circle at top left, #0b101c, #020308 65%);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      padding: 10px 10px 9px 10px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(148, 163, 184, 0.08), transparent 18%, transparent 82%, rgba(148, 163, 184, 0.06));
+      opacity: 0.55;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-title {
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+    }
+
+    .panel-tag {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent-cyan);
+      border-radius: 999px;
+      padding: 2px 8px;
+      border: 1px solid rgba(59, 130, 246, 0.7);
+      background: radial-gradient(circle at top, rgba(30, 64, 175, 0.9), rgba(15, 23, 42, 0.95));
+    }
+
+    .panel-body {
+      position: relative;
+      z-index: 1;
+      font-size: 11px;
+    }
+
+    .metrics-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .metric-block {
+      flex: 1;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(10, 16, 30, 0.98));
+      border-radius: var(--radius-md);
+      padding: 6px 6px 5px 6px;
+      border: 1px solid rgba(30, 64, 175, 0.7);
+      box-shadow: 0 0 14px rgba(15, 23, 42, 0.8);
+    }
+
+    .metric-label {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+      font-size: 9px;
+      margin-bottom: 2px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .metric-label span.mode {
+      color: var(--accent-orange);
+      letter-spacing: 0.18em;
+    }
+
+    .metric-value {
+      font-family: "Consolas", "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+      color: var(--accent-green);
+      font-size: 18px;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .metric-unit {
+      font-size: 10px;
+      color: var(--text-soft);
+    }
+
+    .meter-shell {
+      width: 100%;
+      height: 9px;
+      background: radial-gradient(circle at top, #020617, #020308 70%);
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 3px;
+      border: 1px solid rgba(30, 64, 175, 0.85);
+      position: relative;
+    }
+
+    .meter-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(90deg, rgba(15, 23, 42, 0.7) 1px, transparent 1px);
+      background-size: 18px 100%;
+      opacity: 0.45;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+
+    .meter-fill {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--accent-red), #f97316, #22c55e, #22d3ee);
+      box-shadow: 0 0 14px rgba(52, 211, 153, 0.9);
+      transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .meter-fill.after {
+      background: linear-gradient(90deg, #0ea5e9, #22c55e, #4ade80, #a7f3d0);
+    }
+
+    .graph-grid {
+      margin-top: 4px;
+      border-radius: var(--radius-md);
+      padding: 5px 6px 4px 6px;
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.95), rgba(3, 7, 18, 0.98));
+      border: 1px solid rgba(30, 64, 175, 0.7);
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .graph-grid::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(to right, rgba(148, 163, 184, 0.12) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.08) 1px, transparent 1px);
+      background-size: 22px 22px;
+      opacity: 0.7;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+
+    .graph-col {
+      position: relative;
+      z-index: 1;
+    }
+
+    .graph-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2px;
+    }
+
+    .graph-tag {
+      padding: 1px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(248, 113, 113, 0.7);
+      color: #fecaca;
+      font-size: 8px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .graph-tag.after {
+      border-color: rgba(45, 212, 191, 0.7);
+      color: #ccfbf1;
+    }
+
+    .graph-bar-shell {
+      height: 52px;
+      border-radius: var(--radius-sm);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.98));
+      border: 1px solid rgba(30, 64, 175, 0.85);
+      padding: 3px 4px;
+      display: flex;
+      align-items: flex-end;
+      gap: 4px;
+    }
+
+    .graph-bar {
+      flex: 1;
+      border-radius: 999px;
+      background: linear-gradient(to top, rgba(239, 68, 68, 0.95), rgba(248, 113, 113, 0.9));
+      box-shadow: 0 0 14px rgba(248, 113, 113, 0.9);
+      height: 0;
+      transition: height 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .graph-bar.after {
+      background: linear-gradient(to top, rgba(56, 189, 248, 0.95), rgba(34, 197, 94, 0.95));
+      box-shadow: 0 0 18px rgba(45, 212, 191, 0.95);
+    }
+
+    .graph-caption {
+      margin-top: 2px;
+      font-size: 9px;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .cloak-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .cloak-panel {
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.98));
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(55, 65, 81, 0.8);
+      padding: 5px 6px;
+    }
+
+    .cloak-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cloak-value-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .cloak-value {
+      font-family: "Consolas", "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+      color: #a5b4fc;
+      font-size: 13px;
+    }
+
+    .cloak-depth-bar-shell {
+      margin-top: 3px;
+      height: 7px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: radial-gradient(circle at top, #020617, #020308 70%);
+      border: 1px solid rgba(55, 65, 81, 0.85);
+      position: relative;
+    }
+
+    .cloak-depth-bar-shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(90deg, rgba(30, 64, 175, 0.65) 1px, transparent 1px);
+      background-size: 20px 100%;
+      opacity: 0.45;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+
+    .cloak-depth-fill {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #0ea5e9, #22c55e, #22d3ee);
+      box-shadow: 0 0 14px rgba(59, 130, 246, 0.9);
+      transition: width 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .envelope-chart {
+      margin-top: 4px;
+      border-radius: var(--radius-md);
+      background: radial-gradient(circle at 0% 0%, rgba(56, 189, 248, 0.12), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(34, 197, 94, 0.12), transparent 55%),
+        #020617;
+      border: 1px solid rgba(30, 64, 175, 0.8);
+      padding: 4px 6px 3px 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .envelope-chart::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle at 20% 80%, rgba(59, 130, 246, 0.4), transparent 60%),
+        radial-gradient(circle at 80% 20%, rgba(34, 197, 94, 0.4), transparent 60%);
+      opacity: 0.7;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+
+    .envelope-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .mode-pill {
+      padding: 1px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(52, 211, 153, 0.7);
+      color: #bbf7d0;
+      font-size: 8px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      display: inline-flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .mode-pill span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff, #6bffb5 65%, #16a34a 100%);
+      box-shadow: 0 0 8px rgba(52, 211, 153, 0.9);
+    }
+
+    .envelope-plot {
+      margin-top: 2px;
+      height: 54px;
+      border-radius: var(--radius-sm);
+      background:
+        linear-gradient(to right, rgba(15, 23, 42, 0.75) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.75) 1px, transparent 1px);
+      background-size: 18px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .envelope-line.before,
+    .envelope-line.after {
+      position: absolute;
+      inset: 12px 6px 8px 6px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transform-origin: left center;
+      transform: scaleX(0.2);
+      transition: transform 0.9s cubic-bezier(0.19, 1, 0.22, 1);
+    }
+
+    .envelope-line.before {
+      border-color: rgba(248, 113, 113, 0.8);
+      box-shadow: 0 0 18px rgba(248, 113, 113, 0.45);
+    }
+
+    .envelope-line.after {
+      border-color: rgba(52, 211, 153, 0.9);
+      box-shadow: 0 0 20px rgba(45, 212, 191, 0.75);
+      clip-path: polygon(0 30%, 65% 20%, 100% 50%, 100% 100%, 0 100%);
+    }
+
+    .envelope-line.before::before,
+    .envelope-line.after::before {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 32%;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 2px;
+      font-size: 9px;
+      color: var(--text-muted);
+    }
+
+    .detail-row strong {
+      color: var(--accent-green-soft);
+      font-weight: 500;
+    }
+
+    .relay-grid {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 5px;
+      height: 100%;
+    }
+
+    .ghost-panel-frame {
+      border-radius: var(--radius-md);
+      background: radial-gradient(circle at top right, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 1));
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      padding: 7px 8px 6px 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .ghost-panel-frame::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(to right, rgba(148, 163, 184, 0.18) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+      background-size: 22px 22px;
+      opacity: 0.65;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+
+    .ghost-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-soft);
+      margin-bottom: 3px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .ghost-subtitle {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .ghost-trigger-x {
+      font-family: "Consolas", "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+      font-size: 10px;
+      color: #1f2937;
+      cursor: default;
+      user-select: none;
+      padding: 2px 5px;
+      border-radius: 999px;
+      border: 1px solid rgba(31, 41, 55, 0.7);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.95), rgba(2, 6, 23, 0.98));
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.9);
+    }
+
+    .ghost-trigger-x:active {
+      box-shadow: 0 0 8px rgba(59, 130, 246, 0.7);
+    }
+
+    .ghost-body {
+      margin-top: 3px;
+      font-size: 10px;
+      color: var(--text-soft);
+      position: relative;
+      z-index: 1;
+    }
+
+    .ghost-metrics-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .ghost-metric {
+      flex: 1;
+    }
+
+    .ghost-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+      margin-bottom: 1px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .ghost-value {
+      font-family: "Consolas", "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+      color: var(--accent-green);
+      font-size: 12px;
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+    }
+
+    .ghost-value span.unit {
+      font-size: 9px;
+      color: var(--text-soft);
+    }
+
+    .ghost-meter-shell {
+      width: 100%;
+      height: 7px;
+      border-radius: 999px;
+      background: radial-gradient(circle at top, #020617, #020308 70%);
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .ghost-meter-fill {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #10b981, #22c55e, #22d3ee);
+      box-shadow: 0 0 14px rgba(34, 197, 94, 0.9);
+      transition: width 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .ghost-footnote {
+      margin-top: 3px;
+      font-size: 9px;
+      color: var(--text-muted);
+    }
+
+    .ghost-footnote span {
+      color: var(--accent-cyan);
+      font-family: "Consolas", "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+    }
+
+    .relay-panel {
+      border-radius: var(--radius-md);
+      background: radial-gradient(circle at bottom right, #020617, #020308 70%);
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      padding: 6px 7px 5px 7px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .relay-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(to right, rgba(15, 23, 42, 0.9) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(15, 23, 42, 0.9) 1px, transparent 1px);
+      background-size: 30px 30px;
+      opacity: 0.6;
+      mix-blend-mode: soft-light;
+      pointer-events: none;
+    }
+
+    .relay-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-soft);
+      margin-bottom: 3px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .relay-badge {
+      padding: 1px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(59, 130, 246, 0.7);
+      color: #dbeafe;
+      font-size: 8px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .vpn-strip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+      font-size: 9px;
+      color: var(--text-soft);
+      position: relative;
+      z-index: 1;
+    }
+
+    .vpn-path {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-family: "Consolas", "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+    }
+
+    .vpn-node {
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.98));
+      color: #e5e7eb;
+      font-size: 9px;
+      box-shadow: 0 0 10px rgba(15, 23, 42, 0.8);
+    }
+
+    .vpn-node.core {
+      border-color: rgba(56, 189, 248, 0.9);
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.8);
+      color: #e0f2fe;
+    }
+
+    .vpn-arrow {
+      font-size: 9px;
+      color: var(--text-muted);
+    }
+
+    .vpn-mode {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--accent-green-soft);
+    }
+
+    .log-shell {
+      margin-top: 4px;
+      border-radius: var(--radius-md);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.98));
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      padding: 4px 5px 3px 5px;
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      max-height: 152px;
+    }
+
+    .log-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--text-muted);
+    }
+
+    .log-controls {
+      display: flex;
+      gap: 4px;
+    }
+
+    .log-btn {
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.98));
+      color: #e5e7eb;
+      font-size: 8px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      box-shadow: none;
+    }
+
+    .log-btn span.dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff, #fbbf24 70%, #f97316 100%);
+      box-shadow: 0 0 7px rgba(251, 191, 36, 0.9);
+    }
+
+    .log-btn.danger {
+      border-color: rgba(248, 113, 113, 0.9);
+      color: #fecaca;
+    }
+
+    .log-btn.danger span.dot {
+      background: radial-gradient(circle at 30% 30%, #fff, #f87171 70%, #ef4444 100%);
+      box-shadow: 0 0 7px rgba(248, 113, 113, 0.9);
+    }
+
+    .log-btn:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+
+    .log-list-shell {
+      flex: 1;
+      margin-top: 2px;
+      border-radius: var(--radius-sm);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.9), rgba(3, 7, 18, 0.98));
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      padding: 4px 5px 3px 5px;
+      overflow-y: auto;
+      font-family: "Consolas", "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+      font-size: 10px;
+      color: #e5e7eb;
+    }
+
+    .log-entry {
+      padding: 1px 0 2px 0;
+      border-bottom: 1px dashed rgba(31, 41, 55, 0.8);
+      display: flex;
+      gap: 6px;
+      align-items: baseline;
+      opacity: 0;
+      transform: translateY(4px);
+      animation: logFadeIn 0.28s ease-out forwards;
+    }
+
+    .log-entry:last-child {
+      border-bottom: none;
+    }
+
+    .log-ts {
+      color: #6b7280;
+      min-width: 60px;
+    }
+
+    .log-tag {
+      color: #eab308;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      font-size: 9px;
+      min-width: 64px;
+    }
+
+    .log-msg {
+      color: #e5e7eb;
+    }
+
+    .log-msg span.route {
+      color: #38bdf8;
+    }
+
+    .log-msg span.handshake {
+      color: #a3e635;
+    }
+
+    .log-msg span.depth {
+      color: #a5b4fc;
+    }
+
+    .admin-panel {
+      margin-top: 6px;
+      padding-top: 5px;
+      border-top: 1px dashed rgba(31, 41, 55, 0.9);
+      display: none;
+      position: relative;
+      z-index: 1;
+    }
+
+    .admin-title {
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      margin-bottom: 3px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .admin-tag {
+      padding: 1px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(248, 113, 113, 0.8);
+      color: #fecaca;
+      font-size: 8px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+    }
+
+    .admin-pass-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .admin-pass-row input[type="password"] {
+      flex: 1;
+      padding: 6px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(31, 41, 55, 0.95);
+      background: radial-gradient(circle at top, rgba(15, 23, 42, 0.98), rgba(2, 6, 23, 0.98));
+      color: #e5f5ff;
+      font-family: "Consolas", "SF Mono", ui-monospace, Menlo, Monaco, monospace;
+      font-size: 11px;
+      outline: none;
+      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.9);
+    }
+
+    .admin-pass-row input[type="password"]:focus {
+      border-color: rgba(248, 250, 252, 0.8);
+      box-shadow: 0 0 12px rgba(248, 250, 252, 0.7);
+    }
+
+    .admin-btn {
+      padding: 6px 11px;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      border-radius: 999px;
+      border: 1px solid rgba(248, 113, 113, 0.9);
+      background: radial-gradient(circle at top, rgba(127, 29, 29, 0.95), rgba(69, 10, 10, 0.98));
+      color: #fee2e2;
+      box-shadow: 0 0 14px rgba(248, 113, 113, 0.7);
+    }
+
+    .admin-status {
+      font-size: 9px;
+      min-height: 14px;
+      color: var(--text-muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .admin-status.ok {
+      color: var(--accent-green);
+    }
+
+    .admin-status.err {
+      color: var(--accent-red);
+    }
+
+    .admin-body {
+      display: none;
+      margin-top: 3px;
+      font-size: 10px;
+      color: #a7f3d0;
+    }
+
+    .admin-body strong {
+      color: #6ee7b7;
+    }
+
+    @keyframes logFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 960px) {
+      .shell {
+        padding: 18px 16px;
+      }
+      .grid-two {
+        grid-template-columns: 1fr;
+      }
+      .relay-grid {
+        grid-template-rows: auto auto;
+      }
+      .log-shell {
+        max-height: 180px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      body {
+        align-items: stretch;
+      }
+      .shell {
+        height: 100%;
+        overflow-y: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="shell-inner">
+      <div class="top-bar">
+        <div class="brand-block">
+          <div class="brand-line">
+            <h1>Project 22</h1>
+            <span class="project-id">Ghost Stealth Relay</span>
+          </div>
+          <h2>Signal Cloak Command Center</h2>
+        </div>
+        <div class="env-indicators">
+          <div class="env-pill">
+            <span class="env-dot"></span>
+            <span>Ghost Mode Active</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pin-gate">
+        <div class="pin-header">
+          <div>
+            <div class="field-label">Shadow Pin Access Gate</div>
+            <div class="field-sub">4 digit shadow pin required to enter relay console</div>
+          </div>
+        </div>
+        <div class="pin-row">
+          <div class="pin-inputs">
+            <input type="password" maxlength="1" inputmode="numeric" autocomplete="off" />
+            <input type="password" maxlength="1" inputmode="numeric" autocomplete="off" />
+            <input type="password" maxlength="1" inputmode="numeric" autocomplete="off" />
+            <input type="password" maxlength="1" inputmode="numeric" autocomplete="off" />
+          </div>
+          <button id="pin-submit">
+            <span class="dot"></span>
+            <span>Unlock</span>
+          </button>
+        </div>
+        <div id="pin-status" class="status"></div>
+      </div>
+
+      <div id="control-panel" style="margin-top: 10px; display:none;">
+        <div class="grid-two">
+          <div class="panel">
+            <div class="panel-header">
+              <div>
+                <div class="panel-title">Detectability Profile</div>
+              </div>
+              <div class="panel-tag">Before vs After</div>
+            </div>
+            <div class="panel-body">
+              <div class="metrics-row">
+                <div class="metric-block">
+                  <div class="metric-label">
+                    <span>Exposure Level</span>
+                    <span class="mode">Before</span>
+                  </div>
+                  <div class="metric-value" id="metric-before-val">
+                    94<span class="metric-unit">%</span>
+                  </div>
+                  <div class="meter-shell">
+                    <div id="meter-before" class="meter-fill"></div>
+                  </div>
+                </div>
+                <div class="metric-block">
+                  <div class="metric-label">
+                    <span>Exposure Level</span>
+                    <span class="mode" style="color:var(--accent-green-soft);">After</span>
+                  </div>
+                  <div class="metric-value" id="metric-after-val">
+                    0.2<span class="metric-unit">%</span>
+                  </div>
+                  <div class="meter-shell">
+                    <div id="meter-after" class="meter-fill after"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="graph-grid">
+                <div class="graph-col">
+                  <div class="graph-label">
+                    <span>Detectability</span>
+                    <span class="graph-tag">Before</span>
+                  </div>
+                  <div class="graph-bar-shell">
+                    <div id="graph-before-a" class="graph-bar"></div>
+                    <div id="graph-before-b" class="graph-bar"></div>
+                    <div id="graph-before-c" class="graph-bar"></div>
+                  </div>
+                  <div class="graph-caption">High visibility in spectrum scan</div>
+                </div>
+                <div class="graph-col">
+                  <div class="graph-label">
+                    <span>Detectability</span>
+                    <span class="graph-tag after">After</span>
+                  </div>
+                  <div class="graph-bar-shell">
+                    <div id="graph-after-a" class="graph-bar after"></div>
+                    <div id="graph-after-b" class="graph-bar after"></div>
+                    <div id="graph-after-c" class="graph-bar after"></div>
+                  </div>
+                  <div class="graph-caption">Ghosted footprint under noise floor</div>
+                </div>
+              </div>
+
+              <div class="cloak-layout">
+                <div class="cloak-panel">
+                  <div class="cloak-label">
+                    <span>Cloak Depth</span>
+                    <span>Obfuscation Index</span>
+                  </div>
+                  <div class="cloak-value-row">
+                    <span class="cloak-value" id="cloak-depth-val">9.8 / 10</span>
+                    <span class="cloak-value" id="obf-val" style="color:var(--accent-green);">99.8%</span>
+                  </div>
+                  <div class="cloak-depth-bar-shell">
+                    <div id="cloak-depth-bar" class="cloak-depth-fill"></div>
+                  </div>
+                </div>
+                <div class="cloak-panel">
+                  <div class="cloak-label">
+                    <span>Best Mode</span>
+                    <span>Active Profile</span>
+                  </div>
+                  <div class="cloak-value-row">
+                    <span class="cloak-value" id="best-mode-val" style="color:#7dd3fc;">Ghost Mode</span>
+                    <span class="cloak-value" style="color:#facc15;">Auto-tuned</span>
+                  </div>
+                  <div class="cloak-depth-bar-shell">
+                    <div id="best-mode-bar" class="cloak-depth-fill" style="background:linear-gradient(90deg,#facc15,#22c55e,#22d3ee);"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="envelope-chart">
+                <div class="envelope-header">
+                  <span>Performance Envelope</span>
+                  <span class="mode-pill"><span class="dot"></span>Ghost Mode</span>
+                </div>
+                <div class="envelope-plot">
+                  <div id="env-before" class="envelope-line before"></div>
+                  <div id="env-after" class="envelope-line after"></div>
+                </div>
+                <div class="detail-row">
+                  <span>Throughput<span style="color:#e5e7eb;">: <strong>Stable</strong></span></span>
+                  <span>Latency impact<span style="color:#e5e7eb;">: <strong>Minimal</strong></span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="relay-grid">
+              <div class="ghost-panel-frame">
+                <div class="ghost-panel-header">
+                  <div>
+                    <div>Ghost Relay Control</div>
+                    <div class="ghost-subtitle">Obscured signal orchestration</div>
+                  </div>
+                  <span id="ghost-trigger-x" class="ghost-trigger-x">X</span>
+                </div>
+                <div class="ghost-body">
+                  <div class="ghost-metrics-row">
+                    <div class="ghost-metric">
+                      <div class="ghost-label">
+                        <span>Ghost Output</span>
+                        <span>Relays</span>
+                      </div>
+                      <div class="ghost-value" id="ghost-output">
+                        1.4<span class="unit">relays</span>
+                      </div>
+                      <div class="ghost-meter-shell">
+                        <div id="ghost-output-meter" class="ghost-meter-fill"></div>
+                      </div>
+                    </div>
+                    <div class="ghost-metric">
+                      <div class="ghost-label">
+                        <span>Signal Obfuscation</span>
+                        <span>Coverage</span>
+                      </div>
+                      <div class="ghost-value" id="ghost-obfuscation">
+                        99.8<span class="unit">%</span>
+                      </div>
+                      <div class="ghost-meter-shell">
+                        <div id="ghost-obf-meter" class="ghost-meter-fill"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="ghost-footnote">
+                    Delta visualization: exposure collapses from <span>HIGH</span> to <span>SUB-NOISE</span> under Ghost Mode.
+                  </div>
+                </div>
+              </div>
+
+              <div class="relay-panel">
+                <div class="relay-header">
+                  <span>Relay Activity Log</span>
+                  <span class="relay-badge">Live Handshakes · Routing Events</span>
+                </div>
+
+                <div class="vpn-strip">
+                  <div class="vpn-path">
+                    <span class="vpn-node">Origin</span>
+                    <span class="vpn-arrow">⟶</span>
+                    <span class="vpn-node core">High VPN Node Mesh</span>
+                    <span class="vpn-arrow">⟶</span>
+                    <span class="vpn-node">Obscured Exit</span>
+                  </div>
+                  <span class="vpn-mode">Global Cloak</span>
+                </div>
+
+                <div class="log-shell">
+                  <div class="log-header-row">
+                    <span>Handshake & Routing Stream</span>
+                    <div class="log-controls">
+                      <button id="btn-hide-log" class="log-btn" disabled>
+                        <span class="dot"></span>
+                        <span>Hide log</span>
+                      </button>
+                      <button id="btn-clear-log" class="log-btn danger" disabled>
+                        <span class="dot"></span>
+                        <span>Clear log</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div id="log-list" class="log-list-shell"></div>
+                </div>
+
+                <div id="admin-panel" class="admin-panel">
+                  <div class="admin-title">
+                    <span>Admin Layer Access</span>
+                    <span class="admin-tag">Admin Only</span>
+                  </div>
+                  <div class="admin-pass-row">
+                    <input
+                      id="admin-password-input"
+                      type="password"
+                      placeholder="Enter admin password"
+                      autocomplete="off"
+                    />
+                    <button id="admin-submit" class="admin-btn">Arm</button>
+                  </div>
+                  <div id="admin-status" class="admin-status"></div>
+                  <div id="admin-body" class="admin-body"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SHADOW_PIN = "8236";
+    const ADMIN_PASSWORD = "Rustybucket22";
+
+    const pinInputs = document.querySelectorAll(".pin-inputs input[type='password']");
+    const pinSubmit = document.getElementById("pin-submit");
+    const pinStatus = document.getElementById("pin-status");
+    const controlPanel = document.getElementById("control-panel");
+
+    const meterBefore = document.getElementById("meter-before");
+    const meterAfter = document.getElementById("meter-after");
+    const graphBeforeA = document.getElementById("graph-before-a");
+    const graphBeforeB = document.getElementById("graph-before-b");
+    const graphBeforeC = document.getElementById("graph-before-c");
+    const graphAfterA = document.getElementById("graph-after-a");
+    const graphAfterB = document.getElementById("graph-after-b");
+    const graphAfterC = document.getElementById("graph-after-c");
+    const cloakDepthBar = document.getElementById("cloak-depth-bar");
+    const bestModeBar = document.getElementById("best-mode-bar");
+    const envBefore = document.getElementById("env-before");
+    const envAfter = document.getElementById("env-after");
+
+    const ghostOutputMeter = document.getElementById("ghost-output-meter");
+    const ghostObfMeter = document.getElementById("ghost-obf-meter");
+
+    const ghostTriggerX = document.getElementById("ghost-trigger-x");
+    const adminPanel = document.getElementById("admin-panel");
+    const adminPasswordInput = document.getElementById("admin-password-input");
+    const adminSubmit = document.getElementById("admin-submit");
+    const adminStatus = document.getElementById("admin-status");
+    const adminBody = document.getElementById("admin-body");
+
+    const logList = document.getElementById("log-list");
+    const btnHideLog = document.getElementById("btn-hide-log");
+    const btnClearLog = document.getElementById("btn-clear-log");
+
+    let logHidden = false;
+    let logBuffer = [];
+
+    function readShadowPin() {
+      let buf = "";
+      pinInputs.forEach((inp) => {
+        buf += (inp.value || "").trim();
+      });
+      return buf;
+    }
+
+    function clearPin() {
+      pinInputs.forEach((inp) => (inp.value = ""));
+      if (pinInputs[0]) pinInputs[0].focus();
+    }
+
+    function setPinStatus(msg, ok) {
+      pinStatus.textContent = msg || "";
+      pinStatus.classList.remove("ok", "err");
+      if (!msg) return;
+      if (ok) pinStatus.classList.add("ok");
+      else pinStatus.classList.add("err");
+    }
+
+    function animateGraphs() {
+      requestAnimationFrame(() => {
+        meterBefore.style.width = "92%";
+        meterAfter.style.width = "4%";
+
+        graphBeforeA.style.height = "94%";
+        graphBeforeB.style.height = "82%";
+        graphBeforeC.style.height = "88%";
+
+        graphAfterA.style.height = "8%";
+        graphAfterB.style.height = "6%";
+        graphAfterC.style.height = "10%";
+
+        cloakDepthBar.style.width = "96%";
+        bestModeBar.style.width = "84%";
+
+        envBefore.style.transform = "scaleX(1)";
+        envAfter.style.transform = "scaleX(1)";
+
+        ghostOutputMeter.style.width = "70%";
+        ghostObfMeter.style.width = "99.8%";
+      });
+    }
+
+    pinSubmit.addEventListener("click", () => {
+      const entered = readShadowPin();
+      if (entered.length !== 4) {
+        setPinStatus("Shadow pattern incomplete.", false);
+        return;
+      }
+      if (entered === SHADOW_PIN) {
+        setPinStatus("Shadow gate opened.", true);
+        controlPanel.style.display = "block";
+        animateGraphs();
+      } else {
+        setPinStatus("Invalid shadow pattern.", false);
+        clearPin();
+      }
+    });
+
+    pinInputs.forEach((inp, idx) => {
+      inp.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          pinSubmit.click();
+          return;
+        }
+        if (e.key === "Backspace" && !inp.value && idx > 0) {
+          pinInputs[idx - 1].focus();
+          pinInputs[idx - 1].select();
+        }
+      });
+
+      inp.addEventListener("input", () => {
+        if (inp.value && idx < pinInputs.length - 1) {
+          pinInputs[idx + 1].focus();
+        }
+      });
+    });
+
+    let knockCount = 0;
+    let knockTimer = null;
+    const KNOCK_WINDOW_MS = 1500;
+    const REQUIRED_KNOCKS = 3;
+
+    function resetKnock() {
+      knockCount = 0;
+      if (knockTimer) {
+        clearTimeout(knockTimer);
+        knockTimer = null;
+      }
+    }
+
+    ghostTriggerX.addEventListener("click", () => {
+      if (controlPanel.style.display !== "block") return;
+
+      if (knockCount === 0) {
+        knockTimer = setTimeout(resetKnock, KNOCK_WINDOW_MS);
+      }
+
+      knockCount++;
+
+      if (knockCount >= REQUIRED_KNOCKS) {
+        resetKnock();
+        adminPanel.style.display = "block";
+        adminStatus.textContent = "Admin handshake ready.";
+        adminStatus.classList.remove("err");
+        adminStatus.classList.add("ok");
+        adminPasswordInput.focus();
+      }
+    });
+
+    function setAdminStatus(msg, ok) {
+      adminStatus.textContent = msg || "";
+      adminStatus.classList.remove("ok", "err");
+      if (!msg) return;
+      if (ok) adminStatus.classList.add("ok");
+      else adminStatus.classList.add("err");
+    }
+
+    function addLogEntry(tag, message) {
+      const now = new Date();
+      const hh = now.getHours().toString().padStart(2, "0");
+      const mm = now.getMinutes().toString().padStart(2, "0");
+      const ss = now.getSeconds().toString().padStart(2, "0");
+      const ts = `${hh}:${mm}:${ss}`;
+
+      const entry = { ts, tag, message };
+
+      logBuffer.push(entry);
+      if (!logHidden) {
+        const node = document.createElement("div");
+        node.className = "log-entry";
+
+        const tsSpan = document.createElement("span");
+        tsSpan.className = "log-ts";
+        tsSpan.textContent = ts;
+
+        const tagSpan = document.createElement("span");
+        tagSpan.className = "log-tag";
+        tagSpan.textContent = tag;
+
+        const msgSpan = document.createElement("span");
+        msgSpan.className = "log-msg";
+        msgSpan.innerHTML = message;
+
+        node.appendChild(tsSpan);
+        node.appendChild(tagSpan);
+        node.appendChild(msgSpan);
+
+        logList.appendChild(node);
+        logList.scrollTop = logList.scrollHeight;
+      }
+    }
+
+    function seedInitialLogStream() {
+      addLogEntry(
+        "HANDSHAKE",
+        'Shadow pin gate accepted, initiating <span class="handshake">ghost handshake</span> with relay mesh.'
+      );
+      addLogEntry(
+        "ROUTING",
+        'Route stitched across <span class="route">EU-NODE-17 ⟶ US-NODE-04 ⟶ APAC-NODE-09</span> with balanced latency.'
+      );
+      addLogEntry(
+        "DEPTH",
+        'Cloak depth stabilized at <span class="depth">9.8 / 10</span>, detectability pushed under ambient noise floor.'
+      );
+      addLogEntry(
+        "VPN",
+        'High density V P N node mesh engaged for <span class="route">global cloaking</span> across regions.'
+      );
+      addLogEntry(
+        "STATUS",
+        'Relay stream marked as <span class="handshake">ghosted</span>, persistent observers downgraded to probabilistic only.'
+      );
+    }
+
+    function handleAdminSubmit() {
+      const entered = (adminPasswordInput.value || "").trim();
+      if (!entered) {
+        setAdminStatus("No admin token detected.", false);
+        return;
+      }
+      if (entered === ADMIN_PASSWORD) {
+        setAdminStatus("Admin layer unlocked.", true);
+        adminBody.style.display = "block";
+        adminBody.innerHTML =
+          '<strong>Higher level controls armed.</strong> Ghost routing, relay mapping, and log controls are now writable.';
+
+        btnHideLog.disabled = false;
+        btnClearLog.disabled = false;
+
+        addLogEntry(
+          "ADMIN",
+          'Admin session verified. Relay activity log controls <span class="handshake">unlocked</span> for this session.'
+        );
+      } else {
+        setAdminStatus("Admin token rejected.", false);
+        adminPasswordInput.value = "";
+        adminPasswordInput.focus();
+      }
+    }
+
+    adminSubmit.addEventListener("click", handleAdminSubmit);
+    adminPasswordInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        handleAdminSubmit();
+      }
+    });
+
+    btnHideLog.addEventListener("click", () => {
+      if (btnHideLog.disabled) return;
+      logHidden = !logHidden;
+      if (logHidden) {
+        logList.style.display = "none";
+        btnHideLog.querySelector("span:nth-child(2)").textContent = "Show log";
+      } else {
+        while (logList.firstChild) {
+          logList.removeChild(logList.firstChild);
+        }
+        logBuffer.forEach((entry) => {
+          const node = document.createElement("div");
+          node.className = "log-entry";
+
+          const tsSpan = document.createElement("span");
+          tsSpan.className = "log-ts";
+          tsSpan.textContent = entry.ts;
+
+          const tagSpan = document.createElement("span");
+          tagSpan.className = "log-tag";
+          tagSpan.textContent = entry.tag;
+
+          const msgSpan = document.createElement("span");
+          msgSpan.className = "log-msg";
+          msgSpan.innerHTML = entry.message;
+
+          node.appendChild(tsSpan);
+          node.appendChild(tagSpan);
+          node.appendChild(msgSpan);
+
+          logList.appendChild(node);
+        });
+        logList.style.display = "block";
+        logList.scrollTop = logList.scrollHeight;
+        btnHideLog.querySelector("span:nth-child(2)").textContent = "Hide log";
+      }
+    });
+
+    btnClearLog.addEventListener("click", () => {
+      if (btnClearLog.disabled) return;
+      logBuffer = [];
+      while (logList.firstChild) {
+        logList.removeChild(logList.firstChild);
+      }
+      addLogEntry("ADMIN", 'Relay activity log <span class="handshake">cleared</span> by admin request.');
+    });
+
+    if (pinInputs[0]) pinInputs[0].focus();
+
+    const observer = new MutationObserver((mutations, obs) => {
+      if (controlPanel.style.display === "block") {
+        seedInitialLogStream();
+        obs.disconnect();
+      }
+    });
+
+    observer.observe(controlPanel, { attributes: true, attributeFilter: ["style"] });
+  </script>
+</body>
+</html>
