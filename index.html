@@ -1,0 +1,441 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Project Twenty Two – Ghost Stealth Relay</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background: #050608;
+      color: #e6e6e6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .shell {
+      background: radial-gradient(circle at top, #222 0, #050608 55%);
+      padding: 24px 32px;
+      border-radius: 12px;
+      box-shadow: 0 0 32px rgba(0, 0, 0, 0.75);
+      width: 420px;
+      max-width: 95vw;
+    }
+
+    h1 {
+      margin: 0 0 4px 0;
+      font-size: 20px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #f5f5f5;
+    }
+
+    h2 {
+      margin: 0 0 18px 0;
+      font-size: 11px;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: #888;
+    }
+
+    .field-label {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #999;
+      margin-bottom: 4px;
+    }
+
+    .pin-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .pin-row input[type="password"] {
+      width: 42px;
+      padding: 6px;
+      text-align: center;
+      border-radius: 4px;
+      border: 1px solid #333;
+      background: #111;
+      color: #f5f5f5;
+      font-size: 18px;
+      -moz-appearance: textfield;
+    }
+
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    button {
+      padding: 8px 14px;
+      border-radius: 4px;
+      border: 1px solid #2f7;
+      background: #0b2815;
+      color: #dfffe9;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.45;
+      cursor: default;
+    }
+
+    .status {
+      margin-top: 8px;
+      min-height: 16px;
+      font-size: 11px;
+      color: #bbb;
+    }
+
+    .status.ok {
+      color: #5af59b;
+    }
+
+    .status.err {
+      color: #f55;
+    }
+
+    .panel {
+      margin-top: 16px;
+      padding-top: 10px;
+      border-top: 1px solid #222;
+      display: none;
+    }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .metric-label {
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #aaa;
+      font-size: 10px;
+    }
+
+    .metric-value {
+      font-family: "Consolas", "Courier New", monospace;
+      color: #7ef9c5;
+      font-size: 12px;
+    }
+
+    .meter-shell {
+      width: 100%;
+      height: 8px;
+      background: #121212;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-top: 2px;
+    }
+
+    .meter-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3cf, #5af59b);
+      width: 0;
+      transition: width 0.6s ease-out;
+    }
+
+    .admin-panel {
+      margin-top: 14px;
+      padding-top: 10px;
+      border-top: 1px dashed #333;
+      display: none;
+    }
+
+    .admin-title {
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #f5f5f5;
+      margin-bottom: 6px;
+    }
+
+    .admin-pass-row {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .admin-pass-row input[type="password"] {
+      flex: 1;
+      padding: 6px 8px;
+      border-radius: 4px;
+      border: 1px solid #333;
+      background: #111;
+      color: #f5f5f5;
+      font-family: "Consolas", "Courier New", monospace;
+      font-size: 12px;
+    }
+
+    .admin-status {
+      font-size: 11px;
+      min-height: 14px;
+      color: #bbb;
+    }
+
+    .admin-status.ok {
+      color: #7ef9c5;
+    }
+
+    .admin-status.err {
+      color: #ff7070;
+    }
+
+    .ghost-panel-frame {
+      position: relative;
+      margin-top: 10px;
+      padding: 10px 10px 8px 10px;
+      border-radius: 6px;
+      background: rgba(2, 8, 11, 0.9);
+      border: 1px solid #111;
+    }
+
+    .ghost-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #aaa;
+    }
+
+    .ghost-trigger-x {
+      font-family: "Consolas", "Courier New", monospace;
+      font-size: 10px;
+      color: #333;
+      cursor: default;
+      user-select: none;
+    }
+
+    .ghost-body {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #888;
+    }
+
+    .ghost-body span.value {
+      color: #7ef9c5;
+      font-family: "Consolas", "Courier New", monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <h1>Project Twenty Two</h1>
+    <h2>Ghost Stealth Relay</h2>
+
+    <div class="field-label">Shadow Pin Access Gate</div>
+    <div class="pin-row">
+      <input type="password" maxlength="1" inputmode="numeric" autocomplete="off" />
+      <input type="password" maxlength="1" inputmode="numeric" autocomplete="off" />
+      <input type="password" maxlength="1" inputmode="numeric" autocomplete="off" />
+      <input type="password" maxlength="1" inputmode="numeric" autocomplete="off" />
+      <button id="pin-submit">Enter</button>
+    </div>
+    <div id="pin-status" class="status"></div>
+
+    <div id="control-panel" class="panel">
+      <div class="ghost-panel-frame">
+        <div class="ghost-panel-header">
+          <span>Ghost Relay Control</span>
+          <span id="ghost-trigger-x" class="ghost-trigger-x">X</span>
+        </div>
+        <div class="ghost-body">
+          <div class="metric-row">
+            <span class="metric-label">Ghost Output</span>
+            <span class="metric-value" id="ghost-output">1.4 relays</span>
+          </div>
+          <div class="meter-shell">
+            <div id="ghost-output-meter" class="meter-fill"></div>
+          </div>
+
+          <div style="height: 8px;"></div>
+
+          <div class="metric-row">
+            <span class="metric-label">Signal Obfuscation</span>
+            <span class="metric-value" id="ghost-obfuscation">99.80%</span>
+          </div>
+          <div class="meter-shell">
+            <div id="ghost-obfuscation-meter" class="meter-fill"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="admin-panel" class="admin-panel">
+        <div class="admin-title">Admin Layer Access</div>
+        <div class="admin-pass-row">
+          <input
+            id="admin-password-input"
+            type="password"
+            placeholder="Enter admin password"
+            autocomplete="off"
+          />
+          <button id="admin-submit">Unlock</button>
+        </div>
+        <div id="admin-status" class="admin-status"></div>
+        <div id="admin-body" style="display:none; margin-top:8px; font-size:11px; color:#9fd;"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const SHADOW_PIN = "8236";
+    const ADMIN_PASSWORD = "Rustybucket22";
+
+    const pinInputs = document.querySelectorAll(".pin-row input[type='password']");
+    const pinSubmit = document.getElementById("pin-submit");
+    const pinStatus = document.getElementById("pin-status");
+    const controlPanel = document.getElementById("control-panel");
+
+    const ghostOutputMeter = document.getElementById("ghost-output-meter");
+    const ghostObfMeter = document.getElementById("ghost-obfuscation-meter");
+
+    const ghostTriggerX = document.getElementById("ghost-trigger-x");
+    const adminPanel = document.getElementById("admin-panel");
+    const adminPasswordInput = document.getElementById("admin-password-input");
+    const adminSubmit = document.getElementById("admin-submit");
+    const adminStatus = document.getElementById("admin-status");
+    const adminBody = document.getElementById("admin-body");
+
+    function readShadowPin() {
+      let buf = "";
+      pinInputs.forEach((inp) => {
+        buf += (inp.value || "").trim();
+      });
+      return buf;
+    }
+
+    function clearPin() {
+      pinInputs.forEach((inp) => (inp.value = ""));
+      if (pinInputs[0]) pinInputs[0].focus();
+    }
+
+    function setPinStatus(msg, ok) {
+      pinStatus.textContent = msg || "";
+      pinStatus.classList.remove("ok", "err");
+      if (!msg) return;
+      if (ok) pinStatus.classList.add("ok");
+      else pinStatus.classList.add("err");
+    }
+
+    pinSubmit.addEventListener("click", () => {
+      const entered = readShadowPin();
+      if (entered.length !== 4) {
+        setPinStatus("Shadow pattern incomplete.", false);
+        return;
+      }
+      if (entered === SHADOW_PIN) {
+        setPinStatus("Shadow gate opened.", true);
+        controlPanel.style.display = "block";
+        requestAnimationFrame(() => {
+          ghostOutputMeter.style.width = "70%";
+          ghostObfMeter.style.width = "99.8%";
+        });
+      } else {
+        setPinStatus("Invalid shadow pattern.", false);
+        clearPin();
+      }
+    });
+
+    pinInputs.forEach((inp, idx) => {
+      inp.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          pinSubmit.click();
+          return;
+        }
+        if (e.key === "Backspace" && !inp.value && idx > 0) {
+          pinInputs[idx - 1].focus();
+          pinInputs[idx - 1].select();
+        }
+      });
+
+      inp.addEventListener("input", () => {
+        if (inp.value && idx < pinInputs.length - 1) {
+          pinInputs[idx + 1].focus();
+        }
+      });
+    });
+
+    let knockCount = 0;
+    let knockTimer = null;
+    const KNOCK_WINDOW_MS = 1500;
+    const REQUIRED_KNOCKS = 3;
+
+    function resetKnock() {
+      knockCount = 0;
+      if (knockTimer) {
+        clearTimeout(knockTimer);
+        knockTimer = null;
+      }
+    }
+
+    ghostTriggerX.addEventListener("click", () => {
+      if (controlPanel.style.display !== "block") return;
+
+      if (knockCount === 0) {
+        knockTimer = setTimeout(resetKnock, KNOCK_WINDOW_MS);
+      }
+
+      knockCount++;
+
+      if (knockCount >= REQUIRED_KNOCKS) {
+        resetKnock();
+        adminPanel.style.display = "block";
+        adminStatus.textContent = "Admin handshake ready.";
+        adminStatus.classList.remove("err");
+        adminStatus.classList.add("ok");
+        adminPasswordInput.focus();
+      }
+    });
+
+    function setAdminStatus(msg, ok) {
+      adminStatus.textContent = msg || "";
+      adminStatus.classList.remove("ok", "err");
+      if (!msg) return;
+      if (ok) adminStatus.classList.add("ok");
+      else adminStatus.classList.add("err");
+    }
+
+    function handleAdminSubmit() {
+      const entered = (adminPasswordInput.value || "").trim();
+      if (!entered) {
+        setAdminStatus("No admin token detected.", false);
+        return;
+      }
+      if (entered === ADMIN_PASSWORD) {
+        setAdminStatus("Admin layer unlocked.", true);
+        adminBody.style.display = "block";
+        adminBody.textContent = "Higher level controls armed. Ghost routing and relay mapping now writable.";
+      } else {
+        setAdminStatus("Admin token rejected.", false);
+        adminPasswordInput.value = "";
+        adminPasswordInput.focus();
+      }
+    }
+
+    adminSubmit.addEventListener("click", handleAdminSubmit);
+    adminPasswordInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        handleAdminSubmit();
+      }
+    });
+
+    if (pinInputs[0]) pinInputs[0].focus();
+  </script>
+</body>
+</html>
